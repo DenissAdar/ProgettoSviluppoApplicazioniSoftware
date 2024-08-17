@@ -3,12 +3,22 @@ package catering.businesslogic.task;
 import catering.businesslogic.recipe.Recipe;
 import catering.businesslogic.user.User;
 
+import java.util.ArrayList;
+
 public class Task {
     private String title;
     private int portions;
-    private Recipe recipe;
-    private Preparation preparation;
-    private User chef;
+    private ArrayList<Preparation> preparations;
+    private User cook;
     private boolean terminated;
     private int time;
+
+    public Task(String title, ArrayList<Preparation> preparations, int portions, User cook, int time) {
+        this.title = title;
+        this.portions = portions;
+        this.preparations = preparations;
+        this.cook = cook;
+        this.terminated = false;
+        this.time = time;
+    }
 }
