@@ -207,7 +207,7 @@ public class MenuManager {
         currentMenu.removeItem(mi);
         this.notifyItemDeleted(sec, mi);
     }
-
+// Le Varie notify----------------------------------------------------
     private void notifyItemDeleted(Section sec, MenuItem mi) {
         for (MenuEventReceiver er : this.eventReceivers) {
             er.updateItemDeleted(this.currentMenu, sec, mi);
