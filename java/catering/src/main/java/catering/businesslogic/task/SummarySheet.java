@@ -1,8 +1,5 @@
 package catering.businesslogic.task;
-import catering.businesslogic.CatERing;
 import catering.businesslogic.UseCaseLogicException;
-import catering.businesslogic.event.EventInfo;
-import catering.businesslogic.menu.Section;
 import catering.businesslogic.recipe.Recipe;
 import catering.businesslogic.user.User;
 
@@ -23,6 +20,9 @@ public class SummarySheet {
         this.recipes = new ArrayList<Recipe>();
     }
 
+    public ArrayList<Preparation> getPreparations() {
+        return preparations;
+    }
 
     public int getId() {
         return id;
@@ -51,8 +51,8 @@ public class SummarySheet {
 
     }
     //OP 5
-    public Task addTask(String title, ArrayList<Preparation> preparations, int portions, User cook, int time) {
-        Task tsk = new Task(title,preparations,portions,cook,time);
+    public Task addTask(String title, ArrayList<Preparation> preparations, int portions, int time) {
+        Task tsk = new Task(title,preparations,portions, time);
         tasks.add(tsk);
         return tsk;
 
@@ -87,5 +87,16 @@ public class SummarySheet {
         return tasks.size();
     }
     //----------------------------------------------
-
+    public String toString(){
+        String prep="";
+        String tas = "";
+        for(Preparation p:preparations){
+            System.out.println(p.getName());
+            prep += p.getName();
+        }
+        for(Task t: tasks){
+            tas += t.getTitle();
+        }
+        return this.getId() + " - "+ this.preparations.size() + " - "+prep+ this.getTaskCount() +" -" + tas;
+    }
 }

@@ -2,12 +2,8 @@ package catering.businesslogic.task;
 
 import catering.businesslogic.CatERing;
 import catering.businesslogic.UseCaseLogicException;
-import catering.businesslogic.event.EventInfo;
-import catering.businesslogic.menu.Menu;
-import catering.businesslogic.menu.MenuEventReceiver;
 import catering.businesslogic.recipe.Recipe;
 import catering.businesslogic.user.User;
-import catering.businesslogic.user.UserManager;
 
 import java.util.ArrayList;
 
@@ -15,18 +11,20 @@ public class SheetManager {
     private ArrayList<SheetEventReceiver> eventReceivers;
     private SummarySheet curSheet;
     private ArrayList<SummarySheet> sheets;
-    private User user = CatERing.getInstance().getUserManager().getCurrentUser();
+    private User user;
 
 
     public SheetManager() {
         eventReceivers = new ArrayList<>();
         sheets = new ArrayList<>();
         curSheet = null;
-        user = CatERing.getInstance().getUserManager().getCurrentUser();
+        user = CatERing.getInstance().getUserManager().getCurrentUser();;
+        System.out.println("In costru" + user);
     }
 
     // Operazione 1
     public SummarySheet chooseSheetFile(int sheetId) throws UseCaseLogicException {
+
         if(!user.isChef())
             throw new UseCaseLogicException();
         if(this.isPresent(sheetId))
@@ -36,6 +34,8 @@ public class SheetManager {
 
     // Operazione 1.a.1
     public SummarySheet createSummarySheet(int sheetId) throws UseCaseLogicException{
+
+        System.out.println("In create" + user);
         if(!user.isChef())
             throw new UseCaseLogicException();
 
@@ -43,7 +43,7 @@ public class SheetManager {
         sheets.add(newSheet);
         this.setCurrentSheet(newSheet);
         notifySheetAdded(newSheet);
-
+        System.out.println(newSheet.getId());
         return newSheet;
     }
 
@@ -89,13 +89,15 @@ public class SheetManager {
     public void definePreparation(String name, int sheetId) throws UseCaseLogicException{
         if(!user.isChef())
             throw new UseCaseLogicException();
-        if(this.isPresent(sheetId)){
-            curSheet = getSheet(sheetId);
-            Preparation prep = curSheet.addPreparation(name);
-
-            notifyPreparationAdded(curSheet, prep);
+        if(!this.isPresent(sheetId)){
+            throw new UseCaseLogicException();
         }
-        throw new UseCaseLogicException();
+
+        curSheet = getSheet(sheetId);
+        Preparation prep = curSheet.addPreparation(name);
+
+
+        notifyPreparationAdded(curSheet, prep);
     }
 
     // Operazione 2.a.1 DeletePreparation
@@ -105,6 +107,9 @@ public class SheetManager {
         if(this.isPresent(sheetId)){
             curSheet = getSheet(sheetId);
             curSheet.removePreparation(prep);
+
+
+
 
             notifyPreparationRemoved(curSheet, prep);
         }
@@ -155,12 +160,12 @@ public class SheetManager {
     }
 
     // Operazione 5   assignTask
-    public void defineTask(int sheetId, String title, ArrayList<Preparation> preparations, int portions, User cook, int time) throws UseCaseLogicException{
+    public void defineTask(int sheetId, String title, ArrayList<Preparation> preparations, int portions, int time) throws UseCaseLogicException{
         if(!user.isChef())
             throw new UseCaseLogicException();
         if(this.isPresent(sheetId)) {
             curSheet = getSheet(sheetId);
-            Task tsk = curSheet.addTask(title, preparations, portions, cook, time);
+            Task tsk = curSheet.addTask(title, preparations, portions,  time);
 
             notifyTaskAdded(curSheet, tsk);
         }
