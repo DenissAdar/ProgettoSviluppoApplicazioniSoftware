@@ -21,4 +21,10 @@ public class Task {
         this.time = time;
     }
     public String getTitle() {return title;}
+
+    //Persistenza
+    public static void saveAllNewTasks(int id, ArrayList<Task> tasks) {
+    }
+
+
 }

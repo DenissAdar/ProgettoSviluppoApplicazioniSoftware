@@ -9,6 +9,7 @@ import catering.persistence.MenuPersistence;
 import catering.persistence.TaskPersistence;
 
 public class CatERing {
+
     private static CatERing singleInstance;
 
     public static CatERing getInstance() {
@@ -19,13 +20,13 @@ public class CatERing {
     }
 
     private MenuManager menuMgr;
-   // private SheetManager sheetMgr;
+    private SheetManager sheetMgr;
     private RecipeManager recipeMgr;
     private UserManager userMgr;
     private EventManager eventMgr;
 
     private MenuPersistence menuPersistence;
-    //private TaskPersistence taskPersistence;
+    private TaskPersistence taskPersistence;
 
 
     private CatERing() {
@@ -34,15 +35,16 @@ public class CatERing {
         recipeMgr = new RecipeManager();
         userMgr = new UserManager();
         eventMgr = new EventManager();
-       // sheetMgr = new SheetManager();
+        sheetMgr = new SheetManager();
 
 
-        //taskPersistence = new TaskPersistence();
+        taskPersistence = new TaskPersistence();
         menuPersistence = new MenuPersistence();
         menuMgr.addEventReceiver(menuPersistence);
+        sheetMgr.addEventReceiver(taskPersistence);
     }
 
-   // public SheetManager getSheetManager() { return sheetMgr;}
+    public SheetManager getSheetManager() { return sheetMgr;}
     public MenuManager getMenuManager() {
         return menuMgr;
     }

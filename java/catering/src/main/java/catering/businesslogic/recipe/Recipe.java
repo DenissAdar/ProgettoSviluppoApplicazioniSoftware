@@ -22,6 +22,8 @@ public class Recipe {
         this.name = name;
     }
 
+
+
     public String getName() {
         return name;
     }
@@ -79,6 +81,9 @@ public class Recipe {
             }
         });
         return rec;
+    }
+
+    public static void saveAllNewRecipes(int id, ArrayList<Recipe> recipes) {
     }
 
 
