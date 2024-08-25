@@ -105,18 +105,18 @@ public class SummarySheet {
             prep = prep + " - " +p.getName();
         }
         for(Task t: tasks){
-            tas = tas + t.getTitle();
+            tas = tas +" - " + t.getTitle();
         }
         for(Recipe r: recipes){
             rec = rec + " - " + r.getName();
         }
-        return "Id del Foglio Riepilogativo"+this.getId()
+        return "Id del Foglio Riepilogativo: "+this.getId()
                 + "\n Numero di Preparazioni: "+ this.preparations.size()
                 + "\n Elenco Preparazioni: " + prep
                 + "\n Numero di Ricette: "+ this.recipes.size()
                 + "\n Elenco delle Ricette:  " + rec
                 + "\n Numero dei Compiti: " + this.tasks.size()
-                + "\n Elenco dei Compiti: "+ tas;
+                + "\n Elenco dei Compiti: "+ tas + "\n--------------------------------";
     }
 
 
