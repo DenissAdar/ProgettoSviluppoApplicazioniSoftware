@@ -59,7 +59,6 @@ public class SheetManager {
         for (SummarySheet s: sheets) {
             if(s.getId() == sheetId)
                 return true;
-
         }
         return false;
     }
@@ -80,20 +79,22 @@ public class SheetManager {
         user = getUser();
         if(!user.isChef())
             throw new UseCaseLogicException();
-        if(this.isPresent(sheetId)) {
-            curSheet = getSheet(sheetId);
-            curSheet.restoreSheet();
+        if(!this.isPresent(sheetId)) {
+            throw new UseCaseLogicException();
 
-            notifySheetRestored(curSheet);
-            return curSheet;
 
         }
-        throw new UseCaseLogicException();
+        curSheet = getSheet(sheetId);
+
+
+        notifySheetRestored(curSheet);
+        curSheet.restoreSheet();
+        return curSheet;
 
     }
 
     // Operazione 2 addPreparation
-    public void definePreparation(String name, int sheetId) throws UseCaseLogicException{
+    public Preparation definePreparation(String name, int sheetId) throws UseCaseLogicException{
         user = getUser();
         if(!user.isChef())
             throw new UseCaseLogicException();
@@ -106,6 +107,7 @@ public class SheetManager {
 
 
         notifyPreparationAdded(curSheet, prep);
+        return prep;
     }
 
     // Operazione 2.a.1 DeletePreparation
@@ -113,20 +115,18 @@ public class SheetManager {
         user = getUser();
         if(!user.isChef())
             throw new UseCaseLogicException();
-        if(this.isPresent(sheetId)){
-            curSheet = getSheet(sheetId);
-            curSheet.removePreparation(prep);
-
-
-
-
-            notifyPreparationRemoved(curSheet, prep);
+        if(!this.isPresent(sheetId)){
+            throw new UseCaseLogicException();
         }
-        throw new UseCaseLogicException();
+        curSheet = getSheet(sheetId);
+        curSheet.removePreparation(prep);
+
+        notifyPreparationRemoved(curSheet, prep);
+
     }
 
     // Operazione 3  addRecipe
-    public void defineRecipe(String name, int sheetId) throws UseCaseLogicException{
+    public Recipe defineRecipe(String name, int sheetId) throws UseCaseLogicException{
         user = getUser();
         if(!user.isChef())
             throw new UseCaseLogicException();
@@ -135,6 +135,7 @@ public class SheetManager {
             Recipe recipe = curSheet.addRecipe(name);
 
             notifyRecipeAdded(curSheet, recipe);
+            return recipe;
         }
         throw new UseCaseLogicException();
     }
@@ -172,16 +173,19 @@ public class SheetManager {
     }
 
     // Operazione 5   assignTask
-    public void defineTask(int sheetId, String title, ArrayList<Preparation> preparations, int portions, int time) throws UseCaseLogicException{
+    public Task defineTask(int sheetId, String title, ArrayList<Preparation> preparations, int portions, int time) throws UseCaseLogicException{
         user = getUser();
         if(!user.isChef())
             throw new UseCaseLogicException();
-        if(this.isPresent(sheetId)) {
-            curSheet = getSheet(sheetId);
-            Task tsk = curSheet.addTask(title, preparations, portions,  time);
-
-            notifyTaskAdded(curSheet, tsk);
+        if(!this.isPresent(sheetId)) {
+            throw new UseCaseLogicException();
         }
+        curSheet = getSheet(sheetId);
+        Task tsk = curSheet.addTask(title, preparations, portions,  time);
+
+
+        notifyTaskAdded(curSheet, tsk);
+        return tsk;
     }
 
     // Operazione 5.a.1   removeTask
@@ -258,8 +262,11 @@ public class SheetManager {
     }
 
 
-    public void getFakeSheet(int id) {
-        this.curSheet =  SummarySheet.loadSheet(id);
+    public SummarySheet getFakeSheet(int id) {
+        SummarySheet curSheet = new SummarySheet();
+        curSheet =  SummarySheet.loadSheet(id);
+        sheets.add(curSheet);
+        return curSheet;
     }
 
     public void addEventReceiver(SheetEventReceiver rec) {

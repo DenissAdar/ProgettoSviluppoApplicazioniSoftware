@@ -17,19 +17,20 @@ public class Test2add_remove_Preparation {
         SummarySheet s = CatERing.getInstance().getSheetManager().createSummarySheet(13);
         System.out.println(s.toString());
 
+
         Preparation t,g,cs,tp;
-        t = CatERing.getInstance().getSheetManager().getCurrentSheet().addPreparation("Separazione Tuorli");
-        g = CatERing.getInstance().getSheetManager().getCurrentSheet().addPreparation("Guanciale");
-        cs= CatERing.getInstance().getSheetManager().getCurrentSheet().addPreparation("Cottura Spaghetti");
-        tp= CatERing.getInstance().getSheetManager().getCurrentSheet().addPreparation("Tuorli+Pecorino");
+        t = CatERing.getInstance().getSheetManager().definePreparation("Separazione Tuorli",s.getId());
+        g = CatERing.getInstance().getSheetManager().definePreparation("Guanciale",s.getId());
+        cs= CatERing.getInstance().getSheetManager().definePreparation("Cottura Spaghetti",s.getId());
+        tp= CatERing.getInstance().getSheetManager().definePreparation("Tuorli+Pecorino",s.getId());
 
         System.out.println("Foglio Riepilogativo con aggiunte Preparazioni:");
         System.out.println(s.toString());
 
-        CatERing.getInstance().getSheetManager().getCurrentSheet().removePreparation(t);
-        CatERing.getInstance().getSheetManager().getCurrentSheet().removePreparation(g);
-        CatERing.getInstance().getSheetManager().getCurrentSheet().removePreparation(cs);
-        CatERing.getInstance().getSheetManager().getCurrentSheet().removePreparation(tp);
+        CatERing.getInstance().getSheetManager().deletePreparation(t,s.getId());
+        CatERing.getInstance().getSheetManager().deletePreparation(g,s.getId());
+        CatERing.getInstance().getSheetManager().deletePreparation(cs,s.getId());
+        CatERing.getInstance().getSheetManager().deletePreparation(tp,s.getId());
         System.out.println("Foglio Riepilogativo con Preparazioni rimosse:");
         System.out.println(s.toString());
 

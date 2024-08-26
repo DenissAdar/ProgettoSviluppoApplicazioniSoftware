@@ -15,27 +15,27 @@ public class TaskPersistence implements SheetEventReceiver {
 
     @Override
     public void updateSheetRestored(SummarySheet curSheet) {
-
+        SummarySheet.deleteSheet(curSheet);
     }
 
     @Override
     public void updatePreparationAdded(SummarySheet curSheet, Preparation prep) {
-
+            Preparation.savePreparation(curSheet.getId(),prep.getName());
     }
 
     @Override
     public void updatePreparationRemoved(SummarySheet curSheet, Preparation prep) {
-
+            Preparation.removePreparation(curSheet.getId(),prep.getName());
     }
 
     @Override
     public void updateRecipeAdded(SummarySheet curSheet, Recipe rec) {
-
+            Recipe.saveRecipe(curSheet.getId(), rec.getName());
     }
 
     @Override
     public void updateRecipeRemoved(SummarySheet curSheet, Recipe rec) {
-
+        Recipe.removeRecipe(curSheet.getId(), rec.getName());
     }
 
     @Override
@@ -45,11 +45,11 @@ public class TaskPersistence implements SheetEventReceiver {
 
     @Override
     public void updateTaskAdded(SummarySheet curSheet, Task tsk) {
-
+            Task.saveTask(curSheet.getId(),tsk.getTitle(),tsk.getPreparations(),tsk.getPortions(),tsk.getTime());
     }
 
     @Override
     public void updateTaskRemoved(SummarySheet curSheet, Task tsk) {
-
+        Task.removeTask(curSheet.getId(),tsk.getTitle(),tsk.getPreparations(),tsk.getPortions(),tsk.getTime());
     }
 }

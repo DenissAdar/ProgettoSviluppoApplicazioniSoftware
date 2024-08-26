@@ -83,7 +83,17 @@ public class Recipe {
         return rec;
     }
 
-    public static void saveAllNewRecipes(int id, ArrayList<Recipe> recipes) {
+    public static void saveRecipe(int sheetId, String name){
+        String insert = "INSERT INTO catering.recipes (name) VALUES ('"+name+"');";
+        PersistenceManager.executeUpdate(insert);
+        insert = "INSERT INTO catering.sheetrecipes (sheet_id, recipe_name) VALUES ("+sheetId+",'"+name+"');";
+        PersistenceManager.executeUpdate(insert);
+    }
+    public static void removeRecipe(int sheetid, String name) {
+        String insert = "DELETE FROM catering.recipes WHERE name = '"+name+"';";
+        PersistenceManager.executeUpdate(insert);
+        insert = "DELETE FROM catering.sheetrecipes WHERE recipe_name = '"+name+"' AND sheet_id = "+sheetid+";";
+        PersistenceManager.executeUpdate(insert);
     }
 
 

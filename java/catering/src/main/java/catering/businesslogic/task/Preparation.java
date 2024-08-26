@@ -19,40 +19,25 @@ public class Preparation {
 
 
 
+
     public String getName() {
         return name;
     }
 
     //Persistenza
-    //TODO: SALVARE BENE la preparazione in catering.preparation e catering.sheetpreparations e anche catering.taskpreparation
-    public static void saveAllNewPreparations(int id, ArrayList<Preparation> preparations) {
-        String Insert = "INSERT INTO catering.preparation (name) VALUES (?);";
-        int[] result = PersistenceManager.executeBatchUpdate(Insert, 1, new BatchUpdateHandler() {
-            @Override
-            public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
-                ps.setString(1, PersistenceManager.escapeString(preparations.get(batchCount).name));
-            }
-            @Override
-            public void handleGeneratedIds(ResultSet rs, int count) throws SQLException {
-                // should be only one
-                if (count == 0) {
-                    //sh.id = rs.getInt(1);
-                }
-            }
-        });
-        Insert = "INSERT INTO catering.sheetpreparation (sheet_id, preparation_name) VALUES (?,?);";
-        int[] result1 = PersistenceManager.executeBatchUpdate(Insert, 1, new BatchUpdateHandler() {
-            @Override
-            public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
-                ps.setInt(1,id);
-                ps.setString(2, PersistenceManager.escapeString(preparations.get(batchCount).name));
-            }
 
-            @Override
-            public void handleGeneratedIds(ResultSet rs, int count) throws SQLException {
 
-            }
-
-        });
+    public static void savePreparation(int sheetId, String prep_name){
+        String insert = "INSERT INTO catering.preparation (name) VALUES ('"+prep_name+"');";
+        PersistenceManager.executeUpdate(insert);
+        insert = "INSERT INTO catering.sheetpreparations (sheet_id, preparation_name) VALUES ("+sheetId+",'"+prep_name+"');";
+        PersistenceManager.executeUpdate(insert);
     }
+    public static void removePreparation(int id, String name) {
+        String insert = "DELETE FROM catering.preparation WHERE name = '"+name+"';";
+        PersistenceManager.executeUpdate(insert);
+        insert = "DELETE FROM catering.sheetpreparations WHERE preparation_name = '"+name+"' AND sheet_id = "+id+";";
+        PersistenceManager.executeUpdate(insert);
+    }
+
 }

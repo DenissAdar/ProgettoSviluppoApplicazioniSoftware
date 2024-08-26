@@ -28,20 +28,22 @@ public class SummarySheet {
         this.preparations = new ArrayList<Preparation>();
         this.recipes = new ArrayList<Recipe>();
     }
+    public SummarySheet() {
 
-    public ArrayList<Preparation> getPreparations() {
-        return preparations;
+        this.tasks = new ArrayList<Task>();
+        this.preparations = new ArrayList<Preparation>();
+        this.recipes = new ArrayList<Recipe>();
     }
 
-    public int getId() {
-        return id;
-    }
+
+
+
 
     //Ripristino del Foglio Riepilogativo su cui si richiama (1.b.1)
     public void restoreSheet() {
         this.tasks.clear();
-        this.recipes.clear();
         this.preparations.clear();
+        this.recipes.clear();
     }
 
     // TODO Riguardare
@@ -95,6 +97,16 @@ public class SummarySheet {
     public int getTaskCount() {
         return tasks.size();
     }
+
+
+    public int getId() {
+        return id;
+    }
+    private ArrayList<Recipe> getRecipes() {return recipes;}
+    private ArrayList<Task> getTasks() {return tasks;}
+    public ArrayList<Preparation> getPreparations() {
+        return preparations;
+    }
     //----------------------------------------------
    //TODO Farlo bene bene
     public String toString(){
@@ -105,7 +117,14 @@ public class SummarySheet {
             prep = prep + " - " +p.getName();
         }
         for(Task t: tasks){
-            tas = tas +" - " + t.getTitle();
+            String preps_names ="";
+            for(Preparation preps: preparations){
+                 preps_names = preps_names +" / "+ preps.getName();
+            }
+            tas = tas +" -\n:::::: " + t.getTitle()+
+                    ": \n::::: Numero delle Preparazioni all'interno del Task:" + t.getPreparations().size() +
+                    "\n::::::::Elenco Preparazioni :" + preps_names +
+                    "\n::::::: Numero delle porzioni: " +t.getPortions() + " e tempo necessario per la preparazione: " + t.getTime()+"\n\n";
         }
         for(Recipe r: recipes){
             rec = rec + " - " + r.getName();
@@ -124,22 +143,74 @@ public class SummarySheet {
 
     public static SummarySheet loadSheet(int id){
         SummarySheet sheet = new SummarySheet(0);
-        String sheetQuery = "SELECT * FROM summarysheet WHERE id="+id;
+        String sheetQuery = "SELECT * FROM catering.summarysheet WHERE id="+id;
         PersistenceManager.executeQuery(sheetQuery, new ResultHandler() {
             @Override
             public void handle(ResultSet rs) throws SQLException {
                sheet.id= rs.getInt("id");
             }
         });
-        String prepQuery = "SELECT * FROM sheetpreparations WHERE sheetpreparations.sheet_id="+sheet.id;
+        String prepQuery = "SELECT * FROM catering.sheetpreparations WHERE sheet_id="+sheet.id;
+        ArrayList<Preparation> p = new ArrayList<>();
         PersistenceManager.executeQuery(prepQuery,new ResultHandler(){
             @Override
             public void handle(ResultSet rs) throws SQLException {
-                int prep_id = rs.getInt("id");
+
                 String prep_name = rs.getString("preparation_name");
+                p.add(new Preparation(prep_name));
                 sheet.addPreparation(prep_name);
             }
         });
+
+        String recQuery = "SELECT * FROM catering.sheetrecipes WHERE sheet_id="+sheet.id;
+        ArrayList<Recipe> r = new ArrayList<>();
+        PersistenceManager.executeQuery(recQuery,new ResultHandler(){
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+
+                String rec_name = rs.getString("recipe_name");
+                r.add(new Recipe(rec_name));
+                sheet.addRecipe(rec_name);
+            }
+        });
+
+
+
+        String taskQuery = "SELECT * FROM catering.sheettasks WHERE sheet_id="+sheet.id;
+        PersistenceManager.executeQuery(taskQuery,new ResultHandler(){
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+                String task_title = rs.getString("task_title");
+
+                String q = "SELECT * FROM catering.task WHERE title='"+task_title+"'";
+                ArrayList<Task> t = new ArrayList<>();
+                PersistenceManager.executeQuery(q,new ResultHandler(){
+
+                            @Override
+                            public void handle(ResultSet rs) throws SQLException {
+                                int portions = rs.getInt("portions");
+                                int time = rs.getInt("time");
+
+
+                                String qt = "SELECT * FROM catering.task_preparations WHERE task_title='"+task_title+"'";
+                                ArrayList<Preparation> preps = new ArrayList<>();
+                                PersistenceManager.executeQuery(qt,new ResultHandler(){
+
+                                    @Override
+                                    public void handle(ResultSet rs) throws SQLException {
+                                        String prep_name = rs.getString("preparation_name");
+                                        Preparation p = new Preparation(prep_name);
+                                        preps.add(p);
+                                    }
+
+                                });
+                                t.add(new Task(task_title,preps, portions, time));
+                                sheet.addTask(task_title,preps, portions, time);
+                            }
+                        });
+            }
+        });
+
 
         return sheet;
     }
@@ -173,10 +244,45 @@ public class SummarySheet {
             }
             loadedMenus.put(m.id, m);*/
             //todo Da Capire come fare e cosa mettere come parametri nei metodi!!!
-            if(sh.preparations.size()>0){Preparation.saveAllNewPreparations(sh.id,sh.preparations);}
-            if(sh.recipes.size()>0){Recipe.saveAllNewRecipes(sh.id,sh.recipes);}
-            if(sh.tasks.size()>0){Task.saveAllNewTasks(sh.id, sh.tasks);}
+            //if(sh.preparations.size()>0){Preparation.saveAllNewPreparations(sh.id,sh.preparations);}
+            //if(sh.recipes.size()>0){Recipe.saveAllNewRecipes(sh.id,sh.recipes);}
+          //  if(sh.tasks.size()>0){Task.saveAllNewTasks(sh.id, sh.tasks);}
         }
     }
+
+    public static void deleteSheet(SummarySheet s){
+        String insert;
+        for(Preparation p: s.getPreparations()){
+            insert = "DELETE FROM catering.preparation WHERE name = '"+p.getName()+"';";
+            PersistenceManager.executeUpdate(insert);
+        }
+        insert = "DELETE FROM catering.sheetpreparations WHERE sheet_id = '"+s.getId()+"';";
+        PersistenceManager.executeUpdate(insert);
+
+
+
+        for(Recipe r: s.getRecipes()){
+            insert = "DELETE FROM catering.recipes WHERE name = '"+r.getName()+"';";
+
+            PersistenceManager.executeUpdate(insert);
+        }
+        insert = "DELETE FROM catering.sheetrecipes WHERE sheet_id = '"+s.getId()+"';";
+        PersistenceManager.executeUpdate(insert);
+
+
+
+        for(Task t : s.getTasks()){
+            insert = "DELETE FROM catering.task WHERE title = '"+t.getTitle()+"';";
+            PersistenceManager.executeUpdate(insert);
+            insert = "DELETE FROM catering.task_preparations WHERE task_title = '"+t.getTitle()+"';";
+            PersistenceManager.executeUpdate(insert);
+        }
+        insert = "DELETE FROM catering.sheettasks WHERE sheet_id = '"+s.getId()+"';";
+        PersistenceManager.executeUpdate(insert);
+
+    }
+
+
+
 
 }
