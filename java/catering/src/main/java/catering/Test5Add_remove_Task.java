@@ -15,33 +15,33 @@ public class Test5Add_remove_Task {
         CatERing.getInstance().getUserManager().fakeLogin("Lidia");
         System.out.println("\nTest Operazione 5 e 5.b.1: Add/Remove Task \n\n");
         System.out.println("Foglio Riepilogativo Nuovo:");
-        SummarySheet s = CatERing.getInstance().getSheetManager().createSummarySheet(16);
+        SummarySheet s = CatERing.getInstance().getSheetManager().chooseSheetFile(11);
         System.out.println(s.toString());
 
-        Preparation p = CatERing.getInstance().getSheetManager().getCurrentSheet().addPreparation("Besciamella");
+        Preparation p = CatERing.getInstance().getSheetManager().definePreparation("Ketchup",s.getId());
         ap1.add(p);
-        p = CatERing.getInstance().getSheetManager().getCurrentSheet().addPreparation("Ragu Classico");
+        p = CatERing.getInstance().getSheetManager().definePreparation("Maionese",s.getId());
         ap1.add(p);
 
-        Preparation t = CatERing.getInstance().getSheetManager().getCurrentSheet().addPreparation("Trita Carne");
+        Preparation t = CatERing.getInstance().getSheetManager().definePreparation("Sbatti Uova",s.getId());
         ap2.add(t);
-        t = CatERing.getInstance().getSheetManager().getCurrentSheet().addPreparation("Aggiungi Mollica");
+        t = CatERing.getInstance().getSheetManager().definePreparation("Friggi Uova",s.getId());
         ap2.add(t);
 
 
-        CatERing.getInstance().getSheetManager().getCurrentSheet().addRecipe("Lasagne");
-        CatERing.getInstance().getSheetManager().getCurrentSheet().addRecipe("Polpette");
-        Task t1 = CatERing.getInstance().getSheetManager().getCurrentSheet().addTask("Preparare le Lasagne",ap1,4,120 );
-        Task t2 = CatERing.getInstance().getSheetManager().getCurrentSheet().addTask("Preparare le Polpette",ap2,2,45 );
+        CatERing.getInstance().getSheetManager().defineRecipe("Salse",s.getId());
+        CatERing.getInstance().getSheetManager().defineRecipe("Frittata",s.getId());
+        Task t1 = CatERing.getInstance().getSheetManager().defineTask(s.getId(),"Preparare le salse",ap1,4,120 ,"Marcello");
+        Task t2 = CatERing.getInstance().getSheetManager().defineTask(s.getId(),"Preparare le uova",ap2,2,45 ,"Manuela");
         System.out.println("Foglio Riepilogativo con aggiunti i Task:");
         System.out.println(s.toString());
 
 
         System.out.println("Foglio Riepilogativo con il task t1  rimosso:");
-        CatERing.getInstance().getSheetManager().getSheet(16).removeTask(t1);
+        CatERing.getInstance().getSheetManager().deleteTask(s.getId(),t1);
         System.out.println(s.toString());
         System.out.println("Foglio Riepilogativo con il task t1 e t2 rimosso:");
-        CatERing.getInstance().getSheetManager().getSheet(16).removeTask(t2);
+        CatERing.getInstance().getSheetManager().deleteTask(s.getId(),t2);
         System.out.println(s.toString());
     }
 }

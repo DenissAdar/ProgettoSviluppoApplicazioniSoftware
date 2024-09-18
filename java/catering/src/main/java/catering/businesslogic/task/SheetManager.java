@@ -2,10 +2,8 @@ package catering.businesslogic.task;
 
 import catering.businesslogic.CatERing;
 import catering.businesslogic.UseCaseLogicException;
-import catering.businesslogic.menu.Menu;
 import catering.businesslogic.recipe.Recipe;
 import catering.businesslogic.user.User;
-import catering.persistence.TaskPersistence;
 
 import java.util.ArrayList;
 
@@ -13,7 +11,6 @@ public class SheetManager {
     private ArrayList<SheetEventReceiver> eventReceivers;
     private SummarySheet curSheet;
     private ArrayList<SummarySheet> sheets;
-    //TODO Sistemare questo getUser
     private User user;
 
 
@@ -29,14 +26,15 @@ public class SheetManager {
     }
 
     // Operazione 1
-    public SummarySheet chooseSheetFile(int sheetId) throws UseCaseLogicException {
+    public SummarySheet chooseSheetFile(int id) throws UseCaseLogicException {
         user = getUser();
         if(!user.isChef())
             throw new UseCaseLogicException();
-        if(!this.isPresent(sheetId))
-            throw new UseCaseLogicException();
 
-        return getSheet(sheetId);
+        SummarySheet curSheet = new SummarySheet();
+        curSheet =  SummarySheet.loadSheet(id);
+        sheets.add(curSheet);
+        return curSheet;
     }
 
     // Operazione 1.a.1
@@ -158,22 +156,22 @@ public class SheetManager {
         user = getUser();
         if(!user.isChef())
             throw new UseCaseLogicException();
-        if(this.isPresent(sheetId)){
-            curSheet = getSheet(sheetId);
-            if(curSheet.getTaskPosition(task)>0) {
-                if (position < 0 || position >= curSheet.getTaskCount()) throw new IllegalArgumentException();
-                else {
-                    this.curSheet.changeTaskOrder(task, position);
-                    notifyTaskOrderChanged(curSheet);
-                }
+        if(!this.isPresent(sheetId)){
+            throw new UseCaseLogicException();
+        }
+        curSheet = getSheet(sheetId);
+        if(curSheet.getTaskPosition(task)>=0) {
+            if (position < 0 || position >= curSheet.getTaskCount()) throw new IllegalArgumentException();
+            else {
+                this.curSheet.changeTaskOrder(task, position);
+                notifyTaskOrderChanged(curSheet);
             }
-            else throw new UseCaseLogicException();
         }
         else throw new UseCaseLogicException();
     }
 
     // Operazione 5   assignTask
-    public Task defineTask(int sheetId, String title, ArrayList<Preparation> preparations, int portions, int time) throws UseCaseLogicException{
+    public Task defineTask(int sheetId, String title, ArrayList<Preparation> preparations, int portions, int time, String cook) throws UseCaseLogicException{
         user = getUser();
         if(!user.isChef())
             throw new UseCaseLogicException();
@@ -181,7 +179,7 @@ public class SheetManager {
             throw new UseCaseLogicException();
         }
         curSheet = getSheet(sheetId);
-        Task tsk = curSheet.addTask(title, preparations, portions,  time);
+        Task tsk = curSheet.addTask(title, preparations, portions,  time, cook);
 
 
         notifyTaskAdded(curSheet, tsk);
@@ -193,13 +191,14 @@ public class SheetManager {
         user = getUser();
         if(!user.isChef())
             throw new UseCaseLogicException();
-        if(this.isPresent(sheetId)){
-            curSheet = getSheet(sheetId);
-            curSheet.removeTask(tsk);
-
-            notifyTaskRemoved(curSheet, tsk);
+        if(!this.isPresent(sheetId)){
+            throw new UseCaseLogicException();
         }
-        throw new UseCaseLogicException();
+        curSheet = getSheet(sheetId);
+        curSheet.removeTask(tsk);
+
+        notifyTaskRemoved(curSheet, tsk);
+
     }
 
     public void setCurrentSheet(SummarySheet s) {
@@ -262,12 +261,7 @@ public class SheetManager {
     }
 
 
-    public SummarySheet getFakeSheet(int id) {
-        SummarySheet curSheet = new SummarySheet();
-        curSheet =  SummarySheet.loadSheet(id);
-        sheets.add(curSheet);
-        return curSheet;
-    }
+
 
     public void addEventReceiver(SheetEventReceiver rec) {
         this.eventReceivers.add(rec);

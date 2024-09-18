@@ -2,21 +2,16 @@ package catering;
 
 import catering.businesslogic.CatERing;
 import catering.businesslogic.UseCaseLogicException;
-import catering.businesslogic.recipe.Recipe;
-import catering.businesslogic.task.Preparation;
 import catering.businesslogic.task.SummarySheet;
-import catering.businesslogic.task.Task;
-
-import java.util.ArrayList;
 
 
 public class testTask1 {
     public static void main(String[] args) throws UseCaseLogicException {
 
         CatERing.getInstance().getUserManager().fakeLogin("Lidia");
-        SummarySheet s = CatERing.getInstance().getSheetManager().getFakeSheet(100);
+        SummarySheet s = CatERing.getInstance().getSheetManager().chooseSheetFile(100);
         System.out.println(s.toString()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        s = CatERing.getInstance().getSheetManager().getFakeSheet(5);
+        s = CatERing.getInstance().getSheetManager().chooseSheetFile(5);
         System.out.println(s.toString());
 
      /*    SummarySheet s = CatERing.getInstance().getSheetManager().createSummarySheet(5);

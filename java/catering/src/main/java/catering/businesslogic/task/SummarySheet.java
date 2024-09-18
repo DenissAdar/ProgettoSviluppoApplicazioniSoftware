@@ -46,7 +46,6 @@ public class SummarySheet {
         this.recipes.clear();
     }
 
-    // TODO Riguardare
     //OP 2
     public Preparation addPreparation(String name) {
         Preparation prep = new Preparation(name);
@@ -62,8 +61,8 @@ public class SummarySheet {
 
     }
     //OP 5
-    public Task addTask(String title, ArrayList<Preparation> preparations, int portions, int time) {
-        Task tsk = new Task(title,preparations,portions, time);
+    public Task addTask(String title, ArrayList<Preparation> preparations, int portions, int time,String cook) {
+        Task tsk = new Task(title,preparations,portions, time,cook);
         tasks.add(tsk);
         return tsk;
 
@@ -108,7 +107,7 @@ public class SummarySheet {
         return preparations;
     }
     //----------------------------------------------
-   //TODO Farlo bene bene
+
     public String toString(){
         String prep="";
         String tas = "";
@@ -118,13 +117,13 @@ public class SummarySheet {
         }
         for(Task t: tasks){
             String preps_names ="";
-            for(Preparation preps: preparations){
+            for(Preparation preps: t.getPreparations()){
                  preps_names = preps_names +" / "+ preps.getName();
             }
-            tas = tas +" -\n:::::: " + t.getTitle()+
-                    ": \n::::: Numero delle Preparazioni all'interno del Task:" + t.getPreparations().size() +
-                    "\n::::::::Elenco Preparazioni :" + preps_names +
-                    "\n::::::: Numero delle porzioni: " +t.getPortions() + " e tempo necessario per la preparazione: " + t.getTime()+"\n\n";
+            tas = tas +" -\n-- " + t.getTitle()+
+                    ": \n--- Numero delle Preparazioni all'interno del Task:" + t.getPreparations().size() +
+                    "\n----Elenco Preparazioni :" + preps_names +
+                    "\n--- Numero delle porzioni: " +t.getPortions() + " e tempo necessario per la realizzazione del Compito: " + t.getTime()+"\n"+"--- Cuoco Responsabile di questo Compito: "+t.getCook()+"\n";
         }
         for(Recipe r: recipes){
             rec = rec + " - " + r.getName();
@@ -190,7 +189,7 @@ public class SummarySheet {
                             public void handle(ResultSet rs) throws SQLException {
                                 int portions = rs.getInt("portions");
                                 int time = rs.getInt("time");
-
+                                String cook = rs.getString("cook");
 
                                 String qt = "SELECT * FROM catering.task_preparations WHERE task_title='"+task_title+"'";
                                 ArrayList<Preparation> preps = new ArrayList<>();
@@ -204,8 +203,8 @@ public class SummarySheet {
                                     }
 
                                 });
-                                t.add(new Task(task_title,preps, portions, time));
-                                sheet.addTask(task_title,preps, portions, time);
+                                t.add(new Task(task_title,preps, portions, time,cook));
+                                sheet.addTask(task_title,preps, portions, time,cook);
                             }
                         });
             }
@@ -229,25 +228,7 @@ public class SummarySheet {
                     }
             }
         });
-        if (result[0] > 0) { // menu effettivamente inserito
-            // salva tasks, preparations e recipes nel SumSheet
-            //TODO featuresToDB(m); NB: Chiamalo diversamente questo è il nome del Menu
-
-            /* salva le sezioni
-            if (m.sections.size() > 0) {
-                Section.saveAllNewSections(m.id, m.sections);
-            }
-
-            // salva le voci libere
-            if (m.freeItems.size() > 0) {
-                MenuItem.saveAllNewItems(m.id, 0, m.freeItems);
-            }
-            loadedMenus.put(m.id, m);*/
-            //todo Da Capire come fare e cosa mettere come parametri nei metodi!!!
-            //if(sh.preparations.size()>0){Preparation.saveAllNewPreparations(sh.id,sh.preparations);}
-            //if(sh.recipes.size()>0){Recipe.saveAllNewRecipes(sh.id,sh.recipes);}
-          //  if(sh.tasks.size()>0){Task.saveAllNewTasks(sh.id, sh.tasks);}
-        }
+        if (result[0] > 0) {}
     }
 
     public static void deleteSheet(SummarySheet s){

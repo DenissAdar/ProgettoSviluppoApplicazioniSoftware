@@ -29,17 +29,17 @@ public class Test4ChangeTaskOrder {
         ap2.add(t);
 
 
-        CatERing.getInstance().getSheetManager().getCurrentSheet().addRecipe("Lasagne");
-        CatERing.getInstance().getSheetManager().getCurrentSheet().addRecipe("Polpette");
-        Task t1 = CatERing.getInstance().getSheetManager().getCurrentSheet().addTask("Preparare le Lasagne",ap1,4,120 );
-        Task t2 = CatERing.getInstance().getSheetManager().getCurrentSheet().addTask("Preparare le Polpette",ap2,2,45 );
+        CatERing.getInstance().getSheetManager().defineRecipe("Lasagne",s.getId());
+        CatERing.getInstance().getSheetManager().defineRecipe("Polpette",s.getId());
+        Task t1 = CatERing.getInstance().getSheetManager().defineTask(s.getId(),"Preparare le Lasagne",ap1,4,120 ,"Mario");
+        Task t2 = CatERing.getInstance().getSheetManager().defineTask(s.getId(),"Preparare le Polpette",ap2,2,45 ,"Giuseppe");
         System.out.println("Foglio Riepilogativo con aggiunti i Task:");
         System.out.println(s.toString());
 
 
 
-        CatERing.getInstance().getSheetManager().getCurrentSheet().changeTaskOrder(t1,1);
-        CatERing.getInstance().getSheetManager().getCurrentSheet().changeTaskOrder(t2,0);
+        CatERing.getInstance().getSheetManager().changeTaskOrder(t1,1,s.getId());
+        CatERing.getInstance().getSheetManager().changeTaskOrder(t2,0,s.getId());
         System.out.println("Foglio Riepilogativo con i Task scambiati d'ordine:");
         System.out.println(s.toString());
     }

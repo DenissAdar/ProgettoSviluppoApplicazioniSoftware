@@ -45,11 +45,11 @@ public class TaskPersistence implements SheetEventReceiver {
 
     @Override
     public void updateTaskAdded(SummarySheet curSheet, Task tsk) {
-            Task.saveTask(curSheet.getId(),tsk.getTitle(),tsk.getPreparations(),tsk.getPortions(),tsk.getTime());
+            Task.saveTask(curSheet.getId(),tsk.getTitle(),tsk.getPreparations(),tsk.getPortions(),tsk.getTime(),tsk.getCook());
     }
 
     @Override
     public void updateTaskRemoved(SummarySheet curSheet, Task tsk) {
-        Task.removeTask(curSheet.getId(),tsk.getTitle(),tsk.getPreparations(),tsk.getPortions(),tsk.getTime());
+        Task.removeTask(curSheet.getId(),tsk.getTitle(),tsk.getPreparations(),tsk.getPortions(),tsk.getTime(),tsk.getCook());
     }
 }

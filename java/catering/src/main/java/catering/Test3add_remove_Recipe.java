@@ -12,23 +12,25 @@ public class Test3add_remove_Recipe {
 
         CatERing.getInstance().getUserManager().fakeLogin("Lidia");
         System.out.println("\nTest Operazione 3 e 3.a.1: add/Remove Recipe");
-        SummarySheet s = CatERing.getInstance().getSheetManager().createSummarySheet(14);
+        SummarySheet s = CatERing.getInstance().getSheetManager().chooseSheetFile(16);
         System.out.println(s.toString());
 
         Recipe c,cp,l,m;
-        c = CatERing.getInstance().getSheetManager().getCurrentSheet().addRecipe("Carbonara");
-        cp = CatERing.getInstance().getSheetManager().getCurrentSheet().addRecipe("Cacio e Pepe");
-        l = CatERing.getInstance().getSheetManager().getCurrentSheet().addRecipe("Lasagne");
-        m = CatERing.getInstance().getSheetManager().getCurrentSheet().addRecipe("Milanese");
+        c = CatERing.getInstance().getSheetManager().defineRecipe("Carbonara",s.getId());
+        c = CatERing.getInstance().getSheetManager().defineRecipe("Carbonara",s.getId());
+
+        cp = CatERing.getInstance().getSheetManager().defineRecipe("Cacio e Pepe",s.getId());
+        l = CatERing.getInstance().getSheetManager().defineRecipe("Lasagne",s.getId());
+        m = CatERing.getInstance().getSheetManager().defineRecipe("Milanese",s.getId());
 
         System.out.println("Foglio Riepilogativo con aggiunte Ricette:");
         System.out.println(s.toString());
 
-        CatERing.getInstance().getSheetManager().getCurrentSheet().removeRecipe(c);
-        CatERing.getInstance().getSheetManager().getCurrentSheet().removeRecipe(cp);
-        CatERing.getInstance().getSheetManager().getCurrentSheet().removeRecipe(l);
-        CatERing.getInstance().getSheetManager().getCurrentSheet().removeRecipe(m);
+       /* CatERing.getInstance().getSheetManager().deleteRecipe(c,s.getId());
+        CatERing.getInstance().getSheetManager().deleteRecipe(cp,s.getId());
+        CatERing.getInstance().getSheetManager().deleteRecipe(l,s.getId());
+        CatERing.getInstance().getSheetManager().deleteRecipe(m,s.getId());
         System.out.println("Foglio Riepilogativo con Ricette rimosse:");
-        System.out.println(s.toString());
+        System.out.println(s.toString());*/
     }
 }

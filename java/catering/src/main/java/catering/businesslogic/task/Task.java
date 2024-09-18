@@ -9,27 +9,27 @@ public class Task {
     private String title;
     private int portions;
     private ArrayList<Preparation> preparations;
-    //private User cook;
+    private String cook;
     private boolean terminated;
     private int time;
 
-    public Task(String title, ArrayList<Preparation> preparations, int portions, int time) {
+    public Task(String title, ArrayList<Preparation> preparations, int portions, int time,String cook) {
         this.title = title;
         this.portions = portions;
         this.preparations = preparations;
-        //this.cook = cook;
-        this.terminated = false;
+        this.cook = cook;
+
         this.time = time;
     }
     public String getTitle() {return title;}
     public int getPortions() {return portions;}
     public ArrayList<Preparation> getPreparations() {return preparations;}
-    public boolean isTerminated() {return terminated;}
     public int getTime() {return time;}
+    public String getCook() {return cook;}
 
     //Persistenza
-    public static void saveTask(int sheetId, String task_title,ArrayList<Preparation> preps,int portions, int time){
-        String insert = "INSERT INTO catering.task (title,portions,time) VALUES ('"+task_title+"' , "+portions+","+time+");";
+    public static void saveTask(int sheetId, String task_title,ArrayList<Preparation> preps,int portions, int time,String cook){
+        String insert = "INSERT INTO catering.task (title,portions,time,cook) VALUES ('"+task_title+"' , "+portions+","+time+",'"+cook+"');";
         PersistenceManager.executeUpdate(insert);
         insert = "INSERT INTO catering.sheettasks (sheet_id, task_title) VALUES ("+sheetId+",'"+task_title+"');";
         PersistenceManager.executeUpdate(insert);
@@ -40,7 +40,7 @@ public class Task {
         }
 
     }
-    public static void removeTask(int sheetId, String task_title,ArrayList<Preparation> preps,int portions, int time) {
+    public static void removeTask(int sheetId, String task_title,ArrayList<Preparation> preps,int portions, int time,String cook) {
         String insert = "DELETE FROM catering.task WHERE title = '"+task_title+"';";
         PersistenceManager.executeUpdate(insert);
         insert = "DELETE FROM catering.sheettasks WHERE task_title = '"+task_title+"' AND sheet_id = "+sheetId+";";
@@ -51,6 +51,7 @@ public class Task {
             PersistenceManager.executeUpdate(insert);
         }
     }
+
 
 
 }
